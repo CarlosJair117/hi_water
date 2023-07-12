@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hi_water/assets/interval_progress_bar.dart';
+import 'package:intl/intl.dart';
 
 class StartScreen extends StatefulWidget {
   const StartScreen({super.key});
@@ -15,27 +16,50 @@ class _StartScreenState extends State<StartScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 20.0,
-        centerTitle: false,
-        leadingWidth: 0,
-        title: Text('Hi Water', style: Theme.of(context).textTheme.bodyMedium,),
-        //actions: [ ]
+        toolbarHeight: 16.0,
+        leadingWidth: 100,
+        leading: Text('Hi Water', style: Theme.of(context).textTheme.bodyMedium,),
+        actions: [
+          _hour(),
+         ]
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          _totalMl(),
-          _indicators(),    
-          _buttonReg(),   
-        ],
+      body: SizedBox(
+        height: 160.0,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _totalMl(),
+            _verticalGap(),
+            _indicators(),    
+            _verticalGap(),
+            _buttonReg(),   
+          ],
+        ),
       )
+    );
+  }
+
+  Widget _hour(){
+    String formattedTime = DateFormat.Hm().format(DateTime.now());
+    return Text(
+      formattedTime,
+      style: Theme.of(context).textTheme.bodySmall,
+    );
+  }
+
+  Widget _verticalGap(){
+    return const SizedBox(
+      height: 5.0,
     );
   }
 
   Widget _totalMl(){
      return Column(
        children: [
-         Text('0 ml', style: Theme.of(context).textTheme.headlineSmall),
+         SizedBox(
+          height: 25.0,
+          child: Text('0 ml', style: Theme.of(context).textTheme.headlineSmall)
+        ),
          Text('Faltan 2500 ml', style: Theme.of(context).textTheme.bodyMedium)
        ],
      );
@@ -106,8 +130,8 @@ class _StartScreenState extends State<StartScreen> {
     return Column(
       children: [
         // _intervalBar(),
-        const IntervalProgressBar(),
-        Text('Hidratación', style: Theme.of(context).textTheme.headlineSmall)
+        const IntervalProgressBar(value: 0,),
+        Text('Hidratación', style: Theme.of(context).textTheme.bodySmall)
       ],
     );
   }
@@ -115,7 +139,7 @@ class _StartScreenState extends State<StartScreen> {
   Widget _buttonReg(){
     return Center(
             child: ConstrainedBox(
-              constraints: const BoxConstraints.tightFor( width: 120, height: 30),
+              constraints: const BoxConstraints.tightFor( width: 120, height: 25),
               child: ElevatedButton(
                 onPressed: () {}, 
                 child: const Text('Registrar'),
