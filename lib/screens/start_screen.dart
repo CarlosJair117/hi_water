@@ -1,156 +1,184 @@
 import 'package:flutter/material.dart';
-import 'package:hi_water/assets/interval_progress_bar.dart';
-import 'package:hi_water/screens/drinks_screen.dart';
 import 'package:intl/intl.dart';
 
+import '../assets/interval_progress_bar.dart';
+import 'drinks_screen.dart';
+
+
 class StartScreen extends StatefulWidget {
-  const StartScreen({super.key});
+  final double hidratacion;
+  final int valueWater;
+  const StartScreen({Key? key, required this.hidratacion, required this.valueWater}) : super(key: key);
+  final int totalValue = 2550;
 
   @override
   State<StartScreen> createState() => _StartScreenState();
 }
 
 class _StartScreenState extends State<StartScreen> {
+  get valueWater => widget.valueWater;
+  get totalValue => widget.totalValue;
+  get hidratacion => widget.hidratacion;
+
 
   @override
   Widget build(BuildContext context) {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 16.0,
+        toolbarHeight: 16,
         leadingWidth: 100,
-        leading: Text('Hi Water', style: Theme.of(context).textTheme.bodyMedium,),
-        actions: [
-          _hour(),
-         ]
-      ),
-      body: SizedBox(
-        height: 160.0,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _totalMl(),
-            _verticalGap(),
-            _indicators(),    
-            _verticalGap(),
-            _buttonReg(),   
-          ],
+        title: Text(
+              "Water Counter",
+              style: Theme.of(context).textTheme.bodyMedium,
         ),
-      )
-    );
-  }
-
-  Widget _hour(){
-    String formattedTime = DateFormat.Hm().format(DateTime.now());
-    return Text(
-      formattedTime,
-      style: Theme.of(context).textTheme.bodySmall,
-    );
-  }
-
-  Widget _verticalGap(){
-    return const SizedBox(
-      height: 5.0,
+        actions: [
+          _hour()
+        ],
+        // actions: [],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        children: [
+          _totalMl(),
+          _verticalGap(),
+          _indicators(),
+          _verticalGap(),
+          _buttonReg()
+        ],
+      ),
     );
   }
 
   Widget _totalMl(){
-     return Column(
-       children: [
-         SizedBox(
-          height: 25.0,
-          child: Text('0 ml', style: Theme.of(context).textTheme.headlineSmall)
+    return Column(
+      children: [
+        Text(
+          valueWater.toString(),
+          style: Theme.of(context).textTheme.headlineSmall,
         ),
-         Text('Faltan 2500 ml', style: Theme.of(context).textTheme.bodyMedium)
-       ],
-     );
+        Text(
+        'Faltan ${totalValue - valueWater <= 0 ? 0 : totalValue - valueWater} ml',
+          style: Theme.of(context).textTheme.bodyMedium,
+        )
+      ],
+    );
   }
 
   Widget _indicators(){
     return IntrinsicHeight(
       child: 
         Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _percentage(),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  _smallDivider(),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  _hydration(),
-                ],
-              ), 
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+            _percentage(),
+            _smallDivider(),
+            _hydration(),
+          ],
+        ),
     );
   }
 
   Widget _percentage(){
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         SizedBox(
-          height: 60,
           child: Stack(
             alignment: Alignment.center,
             children: [
-              const SizedBox(
-                width: 45,
-                height: 45,
-                child: CircularProgressIndicator(
+              CircularProgressIndicator(
                 strokeWidth: 6,
-                value: 0.3,
-                color: Color.fromARGB(255, 62, 139, 236),
-                backgroundColor: Color.fromARGB(255, 17, 50, 74),
-                ),
+                value: valueWater * 100 / totalValue / 100,
+                color: const Color.fromARGB(255, 68, 154, 243),
+                backgroundColor: const Color.fromARGB(58, 88, 88, 88),    
               ),
-              Text('0%', style: Theme.of(context).textTheme.bodySmall, textAlign: TextAlign.center,),
-            ]
-          ),
+              Text(
+              '${valueWater * 100 ~/ totalValue >= 100 ? 100 : valueWater * 100 ~/ totalValue}%',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ],
+          )
         ),
-        Text('Hoy', style: Theme.of(context).textTheme.bodySmall,)
+        Text(
+          DateTime.now().toString().split(' ')[0],
+          style: Theme.of(context).textTheme.bodySmall,
+        )
       ],
     );
   }
 
   Widget _smallDivider(){
     return const VerticalDivider(
-      color: Color.fromARGB(255, 51, 51, 51),
-      thickness: 1,
+      color: Color.fromARGB(255, 68, 154, 243),
       width: 20,
+      thickness: 1,
       indent: 10,
       endIndent: 0,
     );
   }
 
-  // Widget _intervalBar(){
-  //   return Text('1.0', style: Theme.of(context).textTheme.headlineSmall,);
-  // }
-
   Widget _hydration(){
     return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
+        IntervalProgressBar(value: hidratacion),
         // _intervalBar(),
-        const IntervalProgressBar(value: 0,),
-        Text('Hidratación', style: Theme.of(context).textTheme.bodySmall)
+        Text(
+          'Hidratación',
+          style: Theme.of(context).textTheme.bodySmall,
+        )
       ],
+    );
+  }
+
+  // ignore: unused_element
+  Widget _intervalBar(){
+    return Text(
+            '1.0',
+            style: Theme.of(context).textTheme.headlineSmall,
+          );
+  }
+
+  Widget _hour() {
+    return Text(
+      DateFormat.Hm().format(DateTime.now()),
+      style: Theme.of(context).textTheme.bodySmall,
+    );
+  }
+
+  Widget _verticalGap() {
+    return const SizedBox(
+      height: 5.5,
     );
   }
 
   Widget _buttonReg(){
     return Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints.tightFor( width: 120, height: 25),
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context, 
-                    MaterialPageRoute(builder: (context) => const DrinksScreen(),)
-                  );
-                }, 
-                child: const Text('Registrar'),
-                ),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints.tightFor(
+          width: 100,
+          height: 30,
+        ),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 5,
             ),
-          );
+            backgroundColor: const Color.fromARGB(255, 31, 15, 175),
+          ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => DrinkScreen(hidratacion: hidratacion,valueWater: valueWater,)),
+              );
+            },
+            child: 
+              const Text(
+                'Registrar',
+              )
+          ),
+      )
+      );
   }
 }

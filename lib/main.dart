@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      home: const StartScreen(),
+      home: const StartScreen(hidratacion: 0,valueWater: 0,),
     );
   }
 }
